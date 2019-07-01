@@ -1,3 +1,5 @@
+report draft: https://docs.google.com/document/d/12nxzH3OHPqYdgOjZzr7LollqVqXb9a9m4T3zukFtY_8/edit?usp=sharing 
+
 24.06.2019
 * design intuitive and functional GUI
 * visualisation of multiple parameters (multidimensional representation of data) 
@@ -6,3 +8,26 @@
 * create survey for sound designers on their expectations on the GUI
   - make wireframes
   - get ethics form from moodle
+  
+Plan
+  * find the right synthesizer 
+  * find the best way of communicating btween the synth and python
+  * get the ML code
+  
+1.07.2019
+Meeting
+* defining sound samples - spectrogram > average in time > vector - distance between them
+* main problem of the project - how to call the synthesizer
+* 3D representation - linear or non-linear interpolation
+* PCA
+* GUI:
+  - data visualisation + presets memory + crossfading (could have)
+  - give the user the ability to customise data visualisation (colours, shapes, relations)?
+ * remember to focus on the softdev aspect of the project
+
+Plan
+* analyse: https://github.com/akuhren/target_vector_estimation
+* find weather recordings
+* add more use cases - use MOSCOW
+* write the first chapter of the report
+* edit the synthesizer to support OSC
