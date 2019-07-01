@@ -1,2 +1,2 @@
 # MastersProject
-UoG 2019
+Software Development MSc, University of Glasgow 2019
