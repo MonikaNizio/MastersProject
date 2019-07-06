@@ -31,3 +31,27 @@ Plan
 * add more use cases - use MOSCOW
 * write the first chapter of the report
 * edit the synthesizer to support OSC
+
+6.07.2019 - notes from Anders:
+
+I actually suggest not using the code from our paper, at least initially.
+Instead consider emukit (https://github.com/amzn/emukit) which has a great Bayesian Optimisation API.
+The gist of it is summarised in this tutorial: https://amzn.github.io/emukit/bayesian-optimization/.
+
+For your use case you’d want to define the cost function as the dissimilarity between the current output
+of the synth and the target sound. How you go about that is up to you, but in the experiments for the paper
+I did the following:
+
+  1. Produce a 1 second sound from the synth and get it as a NumPy array 
+(render to disk and load in Python, or stream directly into the Python process).
+  2. Convert the raw waveform to a spectral representation, e.g. DFT or MFCC using librosa
+(https://librosa.github.io/librosa/).
+  3. (Optional): Project down into 5-10 dimensions using e.g. PCA or something similar
+from scikit-learn (https://scikit-learn.org/stable/modules/decomposition.html).
+  4. Take the Euclidean distance between the two sounds (produced and target) 
+in this representation space and return that as the cost for given the set of synthesizer parameters.
+
+The Bayesian Optimisation framework will then do its magic to find the parameters which minimises that cost,
+hopefully leading to a reconstruction of the target sound. If you get it to work with the “standard” API
+from emukit we can try and replace it with the code from our paper — it should be fairly straightforward at that point.
+
