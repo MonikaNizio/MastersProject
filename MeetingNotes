@@ -24,6 +24,11 @@ Meeting
   - data visualisation + presets memory + crossfading (could have)
   - give the user the ability to customise data visualisation (colours, shapes, relations)?
  * remember to focus on the softdev aspect of the project
+ 
+ [Email: vector representation:https://librosa.github.io/librosa/ .
+ It can be used to compute the Mel frequency cepstral coefficients (mfccs)
+ https://librosa.github.io/librosa/feature.html#feature (a matrix),
+ and you can then take the mean across the temporal axis to get a vector.]
 
 Plan
 * analyse: https://github.com/akuhren/target_vector_estimation
