@@ -60,3 +60,11 @@ The Bayesian Optimisation framework will then do its magic to find the parameter
 hopefully leading to a reconstruction of the target sound. If you get it to work with the “standard” API
 from emukit we can try and replace it with the code from our paper — it should be fairly straightforward at that point.
 
+8.07.2019
+* use PCA to reduce deminesions 
+* DFT + PCA > Compressed version of the spectrogram
+* how to measure the quality? Percieved sound versus produced
+* we need to throw away some data but not too much
+
+
+
