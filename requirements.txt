@@ -1,1 +1,2 @@
 pip install emukit
+pip install numpy scipy
