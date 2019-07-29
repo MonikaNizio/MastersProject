@@ -6,12 +6,19 @@ from sklearn.decomposition import PCA
 #class ProcessAudio:
 def audio_to_vector(audio):
     #self.audio = audio
+
+    #read the audio sample
     a = read(audio)
+
+    #convert the audio to an array
     a = np.array(a[1],dtype=float)
     #print(a)
+
+    #short-time Fourier transform
     A = np.abs(stft(a))
     #print(A)
 
+    #reduce number of dimensions
     pca = PCA(n_components=8)
 
     pca.fit_transform(A)
