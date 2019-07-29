@@ -3,18 +3,26 @@ from librosa.core import stft
 import numpy as np
 from sklearn.decomposition import PCA
 
-a = read("wind_01.wav")
-a = np.array(a[1],dtype=float)
-print(a)
-A = np.abs(stft(a))
-print(A)
+class AudioArray:
+    def __init__(self, audio):
+        self.audio = audio
 
-pca = PCA(n_components=2)
-#pca.fit(A)
+    def audio_to_vector:
+        #read the audio sample
+        a = read("wind_01.wav")
 
-#print pca.explained_variance_ratio_
+        #convert the audio to an array
+        a = np.array(a[1],dtype=float)
+        print(a)
 
+        #short-time Fourier transform
+        A = np.abs(stft(a))
+        print(A)
 
-pca.fit_transform(A)
+        #reduce number of dimensions
+        pca = PCA(n_components=8)
+        #pca.fit(A)
+        #print pca.explained_variance_ratio_
 
-print ("A", A)
+        pca.fit_transform(A)
+        print ("A", A)
