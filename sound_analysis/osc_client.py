@@ -21,9 +21,6 @@ value_list = [10, 20, 30, 40, 50, 60, 70, 80]
 
 client = udp_client.SimpleUDPClient('localhost', 57110)
 
-amplitude = 0.5 # just adding one amplitude
-phase = 0.5 # just adding one phase
-
 msg = osc_message_builder.OscMessageBuilder(address = '/synth_values')
 
 for i in value_list:
