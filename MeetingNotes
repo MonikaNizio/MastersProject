@@ -66,5 +66,20 @@ from emukit we can try and replace it with the code from our paper — it should
 * how to measure the quality? Percieved sound versus produced
 * we need to throw away some data but not too much
 
+17.07.2019
+STFT > does it matter which FT method?
+How to map values? Percentage of the 
+Record output of the synth and take it through the same pipeline
+
+* pay attention to the phase of the sound 
+* Hall of fame - use cases
+* Different technologies structure
+* Surveys, how use cases were determined, references 
+* Report: architecture - clear structure, best practices were applied
+* Evaluating system > Design of the experiment - hard bit, get quality data (how) [leave more time for this], 5-10 - extend these
+
+Plan:
+Try and run the code from the paper
+
 
 
