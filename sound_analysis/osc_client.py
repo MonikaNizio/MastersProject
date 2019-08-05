@@ -17,14 +17,14 @@
 from pythonosc import osc_message_builder
 from pythonosc import udp_client
 
-value_list = [10, 20, 30, 40, 50, 60, 70, 80]
+def run_client(value_list):
 
-client = udp_client.SimpleUDPClient('localhost', 57110)
+    client = udp_client.SimpleUDPClient('localhost', 57110)
 
-msg = osc_message_builder.OscMessageBuilder(address = '/synth_values')
+    msg = osc_message_builder.OscMessageBuilder(address = '/synth_values')
 
-for i in value_list:
-    msg.add_arg(i, arg_type='i')
+    for i in value_list:
+        msg.add_arg(i, arg_type='i')
 
-msg = msg.build()
-client.send(msg)
+    msg = msg.build()
+    client.send(msg)

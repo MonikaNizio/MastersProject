@@ -9,29 +9,32 @@ def save_synth_values(*args):
     #print(args[i])
   print(args)
 
-def record_audio():
-  fs = 44100  # Sample rate
-  seconds = 1  # Duration of recording
+# def record_audio():
+#   fs = 44100  # Sample rate
+#   seconds = 1  # Duration of recording
+#
+#   myrecording = sd.rec(int(seconds * fs), samplerate=fs, channels=1)
+#   sd.wait()  # Wait until recording is finished
+#   write('output.wav', fs, myrecording)  # Save as WAV file
 
-  myrecording = sd.rec(int(seconds * fs), samplerate=fs, channels=1)
-  sd.wait()  # Wait until recording is finished
-  write('output.wav', fs, myrecording)  # Save as WAV file
+dispatcher = dispatcher.Dispatcher()
+#if __name__ == "__main__":
 
-if __name__ == "__main__":
-  parser = argparse.ArgumentParser()
-  parser.add_argument("--ip",
-      default="127.0.0.1", help="The ip to listen on")
-  parser.add_argument("--port",
-      type=int, default=5005, help="The port to listen on")
-  args = parser.parse_args()
+def run_server():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--ip",
+                          default="127.0.0.1", help="The ip to listen on")
+    parser.add_argument("--port",
+                          type=int, default=5005, help="The port to listen on")
+    args = parser.parse_args()
 
-  dispatcher = dispatcher.Dispatcher()
-  dispatcher.map("/synth_receive", save_synth_values)
+    #dispatcher = dispatcher.Dispatcher()
+    dispatcher.map("/synth_receive", save_synth_values)
 
-  server = osc_server.ThreadingOSCUDPServer(
+    server = osc_server.ThreadingOSCUDPServer(
       (args.ip, args.port), dispatcher)
-  print("Serving on {}".format(server.server_address))
-  server.serve_forever()
+    print("Serving on {}".format(server.server_address))
+    #server.serve_forever()
 
 
   # parser2 = argparse.ArgumentParser()
