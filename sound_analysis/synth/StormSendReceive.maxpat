@@ -9,7 +9,7 @@
 			"modernui" : 1
 		}
 ,
-		"rect" : [ 694.0, 178.0, 931.0, 734.0 ],
+		"rect" : [ 947.0, 167.0, 931.0, 734.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -778,7 +778,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 281.0, 330.0, 50.0, 22.0 ],
 					"style" : "",
-					"text" : "7 0"
+					"text" : "7 380"
 				}
 
 			}
@@ -804,7 +804,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 186.0, 330.0, 50.0, 22.0 ],
 					"style" : "",
-					"text" : "6 0"
+					"text" : "6 270"
 				}
 
 			}
@@ -856,7 +856,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 459.333344, 448.0, 50.0, 22.0 ],
 					"style" : "",
-					"text" : "4 127"
+					"text" : "4 50"
 				}
 
 			}
@@ -882,7 +882,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 799.0, 415.0, 50.0, 22.0 ],
 					"style" : "",
-					"text" : "3 127"
+					"text" : "3 40"
 				}
 
 			}
@@ -908,7 +908,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 616.0, 407.0, 50.0, 22.0 ],
 					"style" : "",
-					"text" : "2 127"
+					"text" : "2 30"
 				}
 
 			}
@@ -934,7 +934,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 589.666687, 479.0, 50.0, 22.0 ],
 					"style" : "",
-					"text" : "1 127"
+					"text" : "1 20"
 				}
 
 			}
@@ -960,7 +960,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 377.0, 394.0, 50.0, 22.0 ],
 					"style" : "",
-					"text" : "0 127"
+					"text" : "0 10"
 				}
 
 			}
@@ -5005,7 +5005,7 @@
 									"outlettype" : [ "list", "float", "float", "float", "float", "list", "int" ],
 									"parameter_enable" : 0,
 									"patching_rect" : [ 420.0, 435.0, 120.0, 56.0 ],
-									"setfilter" : [ 0, 3, 1, 0, 0, 1500.0, 2.435934, 5.203765, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+									"setfilter" : [ 0, 3, 1, 0, 0, 770.0, 2.435934, 5.203765, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
 									"style" : ""
 								}
 
@@ -5309,7 +5309,7 @@
 									"outlettype" : [ "list", "float", "float", "float", "float", "list", "int" ],
 									"parameter_enable" : 0,
 									"patching_rect" : [ 105.0, 450.0, 120.0, 56.0 ],
-									"setfilter" : [ 0, 3, 1, 0, 0, 1200.0, 2.435934, 5.203765, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+									"setfilter" : [ 0, 3, 1, 0, 0, 470.0, 2.435934, 5.203765, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
 									"style" : ""
 								}
 
@@ -6817,13 +6817,6 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-36", 0 ],
-					"source" : [ "obj-72", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-36", 0 ],
 					"source" : [ "obj-75", 0 ]
 				}
 
@@ -6862,6 +6855,14 @@
 				"patchline" : 				{
 					"destination" : [ "obj-72", 0 ],
 					"order" : 2,
+					"source" : [ "obj-79", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-77", 0 ],
+					"order" : 3,
 					"source" : [ "obj-79", 0 ]
 				}
 
@@ -6909,14 +6910,14 @@
 		"dependency_cache" : [ 			{
 				"name" : "wind.maxpat",
 				"bootpath" : "~/Desktop/Masters Synth",
-				"patcherrelativepath" : ".",
+				"patcherrelativepath" : "../../../../../Desktop/Masters Synth",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "rain.maxpat",
 				"bootpath" : "~/Desktop/Masters Synth",
-				"patcherrelativepath" : ".",
+				"patcherrelativepath" : "../../../../../Desktop/Masters Synth",
 				"type" : "JSON",
 				"implicit" : 1
 			}
