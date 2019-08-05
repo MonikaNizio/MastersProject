@@ -1,17 +1,15 @@
-from emukit.test_functions import branin_function
-from emukit.core import ParameterSpace, ContinuousParameter
-from emukit.experimental_design.model_free.random_design import RandomDesign
-from GPy.models import GPRegression
-from emukit.model_wrappers import GPyModelWrapper
-from emukit.bayesian_optimization.acquisitions import ExpectedImprovement
+from osc_client import run_client
+from osc_server import run_server
+from process_audio import audio_to_array
+import time
 
-f, _ = branin_function()
-parameter_space = ParameterSpace([ContinuousParameter('x1', -5, 10),
-                                  ContinuousParameter('x2', 0, 15)])
-design = RandomDesign(parameter_space) # Collect random points
-num_data_points = 5
-X = design.get_samples(num_data_points)
-Y = f(X)
-model_gpy = GPRegression(X,Y) # Train and wrap the model in Emukit
-model_emukit = GPyModelWrapper(model_gpy)
-expected_improvement = ExpectedImprovement(model = model_emukit)
+#initial value list
+value_list = [10, 20, 30, 40, 50, 60, 70, 80]
+
+#send values to the synth and record its output
+run_client(value_list)
+
+#receive the values from the synth
+run_server()
+time.sleep(5)
+a = audio_to_array("synth/synth_rec.wav")
