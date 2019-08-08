@@ -19,7 +19,6 @@ def training_function(synth_values):
     audio_vector = audio_to_array("synth/synth_rec.wav")
     return audio_vector
 
-
 syn1 = syn2 = syn3 = syn4 = syn5 = np.arange(158)
 syn6 = np.arange(6000)
 syn7 = np.arange(1000)
@@ -28,10 +27,8 @@ syn8 = np.arange(700)
 # initial value list
 # value_list = [10, 20, 30, 40, 50, 60, 70, 80]
 
-
 # receive the values from the synth
 # run_server()
-
 
 # f, _ = branin_function()
 # parameter_space = ParameterSpace(
@@ -46,7 +43,7 @@ parameter_space = ParameterSpace(
 
 design = RandomDesign(parameter_space)  # Collect random points
 num_data_points = 1
-X = design.get_samples(num_data_points) # X is a list
+X = design.get_samples(num_data_points) # X is a (nested?) list
 print(X)
 
 # remove nesting
