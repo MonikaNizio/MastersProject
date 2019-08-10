@@ -10,6 +10,7 @@ from GPy.models import GPRegression
 from emukit.model_wrappers import GPyModelWrapper
 from emukit.bayesian_optimization.acquisitions import ExpectedImprovement
 from emukit.bayesian_optimization.loops import BayesianOptimizationLoop
+import pdb
 
 
 def training_function(synth_values):
@@ -42,16 +43,18 @@ parameter_space = ParameterSpace(
      DiscreteParameter('x7', syn1), DiscreteParameter('x8', syn8)])
 
 design = RandomDesign(parameter_space)  # Collect random points
-num_data_points = 1
+num_data_points = 5
+pdb.set_trace()
 X = design.get_samples(num_data_points) # X is a (nested?) list
 print(X)
 
 # remove nesting
 X = X[0]
-print(X)
+#print(X)
 
 Y = training_function(X)
-model_gpy = GPRegression(X, Y)  # Train and wrap the model in Emukit
+pdb.set_trace()
+model_gpy = GPRegression(X.reshape(1,-1), Y)  # Train and wrap the model in Emukit
 model_emukit = GPyModelWrapper(model_gpy)
 expected_improvement = ExpectedImprovement(model=model_emukit)
 bayesopt_loop = BayesianOptimizationLoop(model=model_emukit,

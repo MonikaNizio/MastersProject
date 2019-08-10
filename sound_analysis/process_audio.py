@@ -30,7 +30,7 @@ def audio_to_array(audio):
     #reduce number of dimensions
     pca = PCA(n_components=8)
 
-    pca.fit_transform(A)
+    A = pca.fit_transform(A)
 
     #print ("A", A)
     return A
