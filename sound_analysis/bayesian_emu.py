@@ -21,3 +21,8 @@ bayesopt_loop = BayesianOptimizationLoop(model = model_emukit,
                                          space = parameter_space,
                                          acquisition = expected_improvement,
                                          batch_size = 1)
+max_iterations = 30
+bayesopt_loop.run_loop(f, max_iterations)
+results = bayesopt_loop.get_results()
+
+
