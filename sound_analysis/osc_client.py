@@ -25,7 +25,7 @@ def run_client(value_list):
     msg = osc_message_builder.OscMessageBuilder(address = '/synth_values')
 
     #turn array into a list
-    value_list = np.ndarray.tolist(value_list)
+    #value_list = np.ndarray.tolist(value_list)
 
     #turn nested list into a list
     #value_list = value_list[0]
