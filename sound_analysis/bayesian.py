@@ -45,7 +45,7 @@ def training_function(X): #return the difference between the user sample and the
 
 def process_user_sample(user_sample):
     user_sample = audio_to_array(user_sample)
-    user_sample = np.asarray(user_sample)
+    #user_sample = np.asarray(user_sample)
     return user_sample
 
 #1. user sample into a data vector
@@ -70,13 +70,14 @@ num_data_points = 3
 X = design.get_samples(num_data_points) #X is a numpy array
 print("X=", X)
 
+UserFunction.evaluate(training_function, X)
+results = UserFunctionWrapper(training_function).evaluate(X)
+
 #[is this needed?]
-#UserFunction.evaluate(training_function, X)
-#results = UserFunctionWrapper(training_function).evaluate(X)
+#loop_state = create_loop_state(X, Y)
 
 #4. define training_function as Y
 Y = training_function(X)
-loop_state = create_loop_state(X, Y)
 
 #5. train and wrap the model in Emukit
 model_gpy = GPRegression(X, Y)
@@ -91,16 +92,11 @@ bayesopt_loop = BayesianOptimizationLoop(model=model_emukit,
 max_iterations = 3
 bayesopt_loop.run_loop(training_function, max_iterations)
 
+#results = bayesopt_loop.get_results()
+bayesopt_loop.loop_state.X
+print("X: ", bayesopt_loop.loop_state.X)
+print("Y: ", bayesopt_loop.loop_state.Y)
+print("cost: ", bayesopt_loop.loop_state.cost)
 
-results = bayesopt_loop.get_results()
-
-print("X: ", loop_state.X)
-print("Y: ", loop_state.Y)
-print("cost: ", loop_state.cost)
-
-#BenchmarkPlot.make_plot(self)
-#update(results)
-#results = loop_state(results)
-#UserFunctionResult(X, Y).update(results)
 
 
