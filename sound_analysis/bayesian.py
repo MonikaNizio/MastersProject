@@ -3,86 +3,104 @@ from osc_client import run_client
 from process_audio import audio_to_array
 import time
 import numpy as np
-from emukit.test_functions import branin_function
 from emukit.core import ParameterSpace, ContinuousParameter, DiscreteParameter
 from emukit.experimental_design.model_free.random_design import RandomDesign
 from GPy.models import GPRegression
 from emukit.model_wrappers import GPyModelWrapper
 from emukit.bayesian_optimization.acquisitions import ExpectedImprovement
 from emukit.bayesian_optimization.loops import BayesianOptimizationLoop
+from emukit.core.loop.user_function import UserFunction, UserFunctionWrapper
+from emukit.benchmarking.loop_benchmarking.benchmark_plot import BenchmarkPlot
+from emukit.core.loop.loop_state import LoopState
+from emukit.core.loop.loop_state import create_loop_state
+from emukit.core.loop.user_function_result import UserFunctionResult
 import pdb
 
 
-def get_synth_output(synth_values):
-    # send values to the synth and record its output
+def get_synth_output(synth_values): #transform the synth output into a data vector
+    #send values to the synth and record its output
     run_client(synth_values)
+    #allow time to record
     time.sleep(3)
+    #convert to a data vector
     audio_vector = audio_to_array("synth/synth_rec.wav")
     return audio_vector
 
-def user_sample_conversion(audio):
-    user_audio_vector = audio_to_array(audio)
-    return user_audio_vector
+def training_function(X): #return the difference between the user sample and the test sample
 
-def training_function(X):
-    #vector_array = np.zeros((num_data_points, 8))
-    vector_array = [0] * num_data_points  # here will be stored audio vectors of synth outputs for given X
+    i = 0
+    vector_array = [0] * np.size(X,0)  # used for storing audio vectors of synth outputs for the given X
+    #process recordings for the given set of X
     for row in X:
-        x_list = row.tolist()
-        vector_array[row] = np.linalg.norm(user_sample_vector - get_synth_output(x_list))
-
-    #vector_array = [0] * num_data_points  # here will be stored audio vectors of synth outputs for given X
-    #print(vector_array)
-    # for i in range(num_data_points):
-    #     vector_array[i] = np.linalg.norm(user_sample_vector - get_synth_output(x_list[i]))
-    #     #vector_array[i] = get_synth_output(Xlist[i])
-    #     print(i)
-    #     print(vector_array)
+        print("processing set of synth settings from the row #", i, " in X:", row)
+        #Euclidean distance between the target sample and the test sample
+        vector_array[i] = np.linalg.norm(user_sample_vector - get_synth_output(row))
+        print("result:", vector_array[i])
+        i += 1
     vector_array = np.asarray(vector_array)
-    vector_array = vector_array.reshape(num_data_points,1)
+    #print("training function result", vector_array)
+    vector_array = vector_array.reshape(num_data_points, 1)
+    print("training function results for the given set of X:", vector_array)
     return vector_array
 
-# def placeholder(X):
-#     training_function
-
 def process_user_sample(user_sample):
-    user_sample_vector = user_sample_conversion(user_sample)
-    user_sample_vector = np.asarray(user_sample_vector)
-    return user_sample_vector
+    user_sample = audio_to_array(user_sample)
+    user_sample = np.asarray(user_sample)
+    return user_sample
 
-user_sample_vector = process_user_sample("audio_samples/rain01.wav")
+#1. user sample into a data vector
+user_sample_vector = process_user_sample("audio_samples/rain02.wav")
+#print("user sample", user_sample_vector)
 
+#2. ranges of the synth parameters
 syn1 = syn2 = syn3 = syn4 = syn5 = np.arange(158)
 syn6 = np.arange(6000)
 syn7 = np.arange(1000)
 syn8 = np.arange(700)
 
+#2. synth paramters ranges into an 8D parameter space
 parameter_space = ParameterSpace(
     [DiscreteParameter('x1', syn1), DiscreteParameter('x2', syn2), DiscreteParameter('x3', syn3),
      DiscreteParameter('x4', syn4), DiscreteParameter('x5', syn5), DiscreteParameter('x6', syn6),
      DiscreteParameter('x7', syn1), DiscreteParameter('x8', syn8)])
 
-design = RandomDesign(parameter_space)  # Collect random points
-num_data_points = 5
-#pdb.set_trace()
-X = design.get_samples(num_data_points) # X is a numpy array ##lista punktów
+#3. collect random points
+design = RandomDesign(parameter_space)
+num_data_points = 3
+X = design.get_samples(num_data_points) #X is a numpy array
 print("X=", X)
 
-#Y = get_synth_output(X) ##tu trzeba zrobić liste wynikow czyli wektorow
-#pdb.set_trace()
-# Y = placeholder(X)
-Y = training_function(X)
+#[is this needed?]
+#UserFunction.evaluate(training_function, X)
+#results = UserFunctionWrapper(training_function).evaluate(X)
 
-print(Y)
-model_gpy = GPRegression(X, Y)  # Train and wrap the model in Emukit
+#4. define training_function as Y
+Y = training_function(X)
+loop_state = create_loop_state(X, Y)
+
+#5. train and wrap the model in Emukit
+model_gpy = GPRegression(X, Y)
 
 model_emukit = GPyModelWrapper(model_gpy)
 expected_improvement = ExpectedImprovement(model=model_emukit)
 bayesopt_loop = BayesianOptimizationLoop(model=model_emukit,
                                          space=parameter_space,
                                          acquisition=expected_improvement,
-                                         batch_size=1)
+                                         batch_size=3)
 
-max_iterations = 10
+max_iterations = 3
 bayesopt_loop.run_loop(training_function, max_iterations)
+
+
 results = bayesopt_loop.get_results()
+
+print("X: ", loop_state.X)
+print("Y: ", loop_state.Y)
+print("cost: ", loop_state.cost)
+
+#BenchmarkPlot.make_plot(self)
+#update(results)
+#results = loop_state(results)
+#UserFunctionResult(X, Y).update(results)
+
+
