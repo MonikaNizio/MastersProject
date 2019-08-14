@@ -9,12 +9,11 @@ from GPy.models import GPRegression
 from emukit.model_wrappers import GPyModelWrapper
 from emukit.bayesian_optimization.acquisitions import ExpectedImprovement
 from emukit.bayesian_optimization.loops import BayesianOptimizationLoop
-from emukit.core.loop.user_function import UserFunctionWrapper
+from emukit.core.loop.user_function import UserFunction, UserFunctionWrapper
 from emukit.benchmarking.loop_benchmarking.benchmark_plot import BenchmarkPlot
 from emukit.core.loop.loop_state import LoopState
 from emukit.core.loop.loop_state import create_loop_state
-
-
+from emukit.core.loop.user_function_result import UserFunctionResult
 import pdb
 
 
@@ -49,33 +48,37 @@ def process_user_sample(user_sample):
     user_sample = np.asarray(user_sample)
     return user_sample
 
-#user sample into a data vector
+#1. user sample into a data vector
 user_sample_vector = process_user_sample("audio_samples/rain02.wav")
-print("user sample", user_sample_vector)
+#print("user sample", user_sample_vector)
 
-#ranges of the synth parameters
+#2. ranges of the synth parameters
 syn1 = syn2 = syn3 = syn4 = syn5 = np.arange(158)
 syn6 = np.arange(6000)
 syn7 = np.arange(1000)
 syn8 = np.arange(700)
 
-#synth paramters ranges into an 8D parameter space
+#2. synth paramters ranges into an 8D parameter space
 parameter_space = ParameterSpace(
     [DiscreteParameter('x1', syn1), DiscreteParameter('x2', syn2), DiscreteParameter('x3', syn3),
      DiscreteParameter('x4', syn4), DiscreteParameter('x5', syn5), DiscreteParameter('x6', syn6),
      DiscreteParameter('x7', syn1), DiscreteParameter('x8', syn8)])
 
-#collect random points
+#3. collect random points
 design = RandomDesign(parameter_space)
 num_data_points = 3
 X = design.get_samples(num_data_points) #X is a numpy array
 print("X=", X)
 
+#[is this needed?]
+#UserFunction.evaluate(training_function, X)
+#results = UserFunctionWrapper(training_function).evaluate(X)
+
+#4. define training_function as Y
 Y = training_function(X)
 loop_state = create_loop_state(X, Y)
-print(Y)
 
-#train and wrap the model in Emukit
+#5. train and wrap the model in Emukit
 model_gpy = GPRegression(X, Y)
 
 model_emukit = GPyModelWrapper(model_gpy)
@@ -90,11 +93,14 @@ bayesopt_loop.run_loop(training_function, max_iterations)
 
 
 results = bayesopt_loop.get_results()
-#BenchmarkPlot.make_plot(self)
-loop_state.update(results)
-#results = loop_state(results)
+
 print("X: ", loop_state.X)
 print("Y: ", loop_state.Y)
 print("cost: ", loop_state.cost)
+
+#BenchmarkPlot.make_plot(self)
+#update(results)
+#results = loop_state(results)
+#UserFunctionResult(X, Y).update(results)
 
 
