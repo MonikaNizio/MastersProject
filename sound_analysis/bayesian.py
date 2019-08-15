@@ -70,14 +70,15 @@ num_data_points = 3
 X = design.get_samples(num_data_points) #X is a numpy array
 print("X=", X)
 
+#[is the below needed?]
 UserFunction.evaluate(training_function, X)
-results = UserFunctionWrapper(training_function).evaluate(X)
-
-#[is this needed?]
-#loop_state = create_loop_state(X, Y)
+#I put UserFunctionWrapper in line 94
 
 #4. define training_function as Y
 Y = training_function(X)
+
+#[is this needed?]
+#loop_state = create_loop_state(X, Y)
 
 #5. train and wrap the model in Emukit
 model_gpy = GPRegression(X, Y)
@@ -90,13 +91,14 @@ bayesopt_loop = BayesianOptimizationLoop(model=model_emukit,
                                          batch_size=3)
 
 max_iterations = 3
-bayesopt_loop.run_loop(training_function, max_iterations)
+bayesopt_loop.run_loop(UserFunctionWrapper(training_function), max_iterations)
 
-#results = bayesopt_loop.get_results()
-bayesopt_loop.loop_state.X
+results = bayesopt_loop.get_results()
+#bayesopt_loop.loop_state.X
 print("X: ", bayesopt_loop.loop_state.X)
 print("Y: ", bayesopt_loop.loop_state.Y)
 print("cost: ", bayesopt_loop.loop_state.cost)
+
 
 
 
