@@ -1,6 +1,7 @@
 from scipy.io.wavfile import read
 from librosa.core import stft
 from librosa.util import normalize
+from librosa.feature import mfcc
 import numpy as np
 from sklearn.decomposition import PCA
 import soundfile as sf
@@ -25,6 +26,7 @@ def audio_to_array(audio):
 
     #short-time Fourier transform
     audio_arr = np.abs(stft(audio_arr))
+    #audio_arr = np.abs(mfcc(audio_arr))
 
     #reduce number of dimensions
     pca = PCA(n_components=8)
