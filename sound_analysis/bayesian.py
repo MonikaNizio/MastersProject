@@ -15,11 +15,18 @@ from emukit.core.loop.loop_state import LoopState
 from emukit.core.loop.loop_state import create_loop_state
 from emukit.core.loop.user_function_result import UserFunctionResult
 import pdb
+import matplotlib.pyplot as plt
+from sklearn.gaussian_process import GaussianProcessRegressor
+
+
+
 
 
 def get_synth_output(synth_values): #transform the synth output into a data vector
+    vector_array = np.array([0, 0, 0, 0, 0, 5999, 0, synth_values[0]])
+
     #send values to the synth and record its output
-    run_client(synth_values)
+    run_client(vector_array)
     #allow time to record
     time.sleep(3)
     #convert to a data vector
@@ -34,12 +41,13 @@ def training_function(X): #return the difference between the user sample and the
     for row in X:
         print("processing set of synth settings from the row #", i, " in X:", row)
         #Euclidean distance between the target sample and the test sample
-        vector_array[i] = np.linalg.norm(user_sample_vector - get_synth_output(row))
+        vector_array[i] = np.linalg.norm(user_sample_vector - get_synth_output(row.astype(int)))
+        #vector_array[i] = np.linalg.norm(user_sample_vector - get_synth_output(row.astype(int)))
         print("result:", vector_array[i])
         i += 1
     vector_array = np.asarray(vector_array)
     #print("training function result", vector_array)
-    vector_array = vector_array.reshape(num_data_points, 1)
+    vector_array = vector_array.reshape(-1, 1)
     print("training function results for the given set of X:", vector_array)
     return vector_array
 
@@ -60,13 +68,17 @@ syn8 = np.arange(700)
 
 #2. synth paramters ranges into an 8D parameter space
 parameter_space = ParameterSpace(
-    [DiscreteParameter('x1', syn1), DiscreteParameter('x2', syn2), DiscreteParameter('x3', syn3),
-     DiscreteParameter('x4', syn4), DiscreteParameter('x5', syn5), DiscreteParameter('x6', syn6),
-     DiscreteParameter('x7', syn1), DiscreteParameter('x8', syn8)])
+    [ContinuousParameter('x8', 0., 699.)])
+
+
+# parameter_space = ParameterSpace(
+#     [DiscreteParameter('x1', syn1), DiscreteParameter('x2', syn2), DiscreteParameter('x3', syn3),
+#      DiscreteParameter('x4', syn4), DiscreteParameter('x5', syn5), DiscreteParameter('x6', syn6),
+#      DiscreteParameter('x7', syn1), DiscreteParameter('x8', syn8)])
 
 #3. collect random points
 design = RandomDesign(parameter_space)
-num_data_points = 3
+num_data_points = 5
 X = design.get_samples(num_data_points) #X is a numpy array
 print("X=", X)
 
@@ -81,18 +93,19 @@ Y = training_function(X)
 #loop_state = create_loop_state(X, Y)
 
 #5. train and wrap the model in Emukit
-model_gpy = GPRegression(X, Y)
+model_gpy = GPRegression(X, Y, normalizer = True)
 
 model_emukit = GPyModelWrapper(model_gpy)
 expected_improvement = ExpectedImprovement(model=model_emukit)
 bayesopt_loop = BayesianOptimizationLoop(model=model_emukit,
                                          space=parameter_space,
                                          acquisition=expected_improvement,
-                                         batch_size=3)
+                                         batch_size=5)
 
-max_iterations = 3
-bayesopt_loop.run_loop(UserFunctionWrapper(training_function), max_iterations)
-
+max_iterations = 10
+bayesopt_loop.run_loop(training_function, max_iterations)
+model_gpy.plot()
+plt.show()
 results = bayesopt_loop.get_results()
 #bayesopt_loop.loop_state.X
 print("X: ", bayesopt_loop.loop_state.X)
