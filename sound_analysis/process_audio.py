@@ -1,5 +1,5 @@
 from scipy.io.wavfile import read
-from librosa.core import stft
+from librosa.core import stft, load
 from librosa.util import normalize
 from librosa.feature import mfcc
 import numpy as np
@@ -18,6 +18,10 @@ def audio_to_array(audio):
     #read the audio sample
     audio = read(audio)
 
+    #[removed]
+    #y, sr = load(audio, offset=30, duration=5)
+    #audio_arr = mfcc(y=y, sr=sr)
+
     #convert the audio to an array
     audio_arr = np.array(audio[1],dtype=float)
 
@@ -26,7 +30,11 @@ def audio_to_array(audio):
 
     #short-time Fourier transform
     audio_arr = np.abs(stft(audio_arr))
+
+    #[removed]
+    #Mel - frequency cepstral coefficients(MFCCs)
     #audio_arr = np.abs(mfcc(audio_arr))
+    #audio_arr = mfcc(audio_arr, sr=44100)
 
     #reduce number of dimensions
     pca = PCA(n_components=8)
