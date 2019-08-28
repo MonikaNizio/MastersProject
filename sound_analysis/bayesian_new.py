@@ -31,8 +31,8 @@ from l2_bayes_opt.acquisitions import (
     L2ExpectedImprovement as L2_EI)
 from l2_bayes_opt.utils import BayesOptPlotter
 
-def get_synth_output(synth_values):  # transform the synth output into a data vector
-    vector_array = np.array([synth_values[0], 0, 0, 0, 0, 5999, 0, 0])
+def get_synth_output(vector_array):  # transform the synth output into a data vector
+    #vector_array = np.array([0, 0, 0, 0, 0, 5999, 0, synth_values[0]])
 
     # send values to the synth and record its output
     run_client(vector_array)
@@ -78,52 +78,43 @@ syn6 = np.arange(6000)
 syn7 = np.arange(1000)
 syn8 = np.arange(700)
 
-# 2. synth paramters ranges into an 8D parameter space
+###start
+n_samples = 5
 parameter_space = ParameterSpace(
-   [ContinuousParameter('x1', 0., 157.)])
+    [ContinuousParameter('x1', 0., 157.), ContinuousParameter('x2', 0., 157.), ContinuousParameter('x3', 0., 157.),
+     ContinuousParameter('x4', 0., 157.), ContinuousParameter('x5', 0., 157.), ContinuousParameter('x6', 0., 5999.),
+     ContinuousParameter('x7', 0., 999.), ContinuousParameter('x8', 0., 699.)])
 
-# parameter_space = ParameterSpace(
-#     [DiscreteParameter('x8', syn8)])
+latin_design = LatinDesign(parameter_space=parameter_space)
+X0 = latin_design.get_samples(n_samples)
+Y0 = training_function(X0)
+#D0 = ((Y0 - target)**2).sum(axis=1)
+#plotter = BayesOptPlotter(h_noiseless, target, xmin, xmax, X0=X0, Y0=Y0)
 
-# parameter_space = ParameterSpace(
-#     [ContinuousParameter('x1', 0., 157.), ContinuousParameter('x2', 0., 157.), ContinuousParameter('x3', 0., 157.),
-#      ContinuousParameter('x4', 0., 157.), ContinuousParameter('x5', 0., 157.), ContinuousParameter('x6', 0., 5999.),
-#      ContinuousParameter('x7', 0., 999.), ContinuousParameter('x8', 0., 699.)])
+model = GPRegression(X0, Y0)
+model_wrapped = GPyModelWrapper(model)
+target = user_sample_vector
+acq = L2_LCB(model=model_wrapped, target=target)
 
-# parameter_space = ParameterSpace(
-#     [DiscreteParameter('x1', syn1), DiscreteParameter('x2', syn2), DiscreteParameter('x3', syn3),
-#      DiscreteParameter('x4', syn4), DiscreteParameter('x5', syn5), DiscreteParameter('x6', syn6),
-#      DiscreteParameter('x7', syn1), DiscreteParameter('x8', syn8)])
-
-# 3. collect random points
-design = RandomDesign(parameter_space)
-num_data_points = 5
-X = design.get_samples(num_data_points)  # X is a numpy array
-print("X=", X)
-
-# [is the below needed?]
-# UserFunction.evaluate(training_function, X)
-# I put UserFunctionWrapper in line 94
-
-# 4. define training_function as Y
-Y = training_function(X)
-
-# [is this needed?]
-# loop_state = create_loop_state(X, Y)
+fit_update = lambda a, b: model.optimize_restarts(verbose=False)
+bayesopt_loop = BayesianOptimizationLoop(
+    model=model_wrapped, space=parameter_space, acquisition=acq)
+bayesopt_loop.iteration_end_event.append(fit_update)
+bayesopt_loop.run_loop(training_function, 5)
 
 # 5. train and wrap the model in Emukit
-model_gpy = GPRegression(X, Y, normalizer=True)
-
-model_emukit = GPyModelWrapper(model_gpy)
-expected_improvement = ExpectedImprovement(model=model_emukit)
-bayesopt_loop = BayesianOptimizationLoop(model=model_emukit,
-                                         space=parameter_space,
-                                         acquisition=expected_improvement,
-                                         batch_size=5)
-
-max_iterations = 15
-bayesopt_loop.run_loop(training_function, max_iterations)
-model_gpy.plot()
+# model_gpy = GPRegression(X, Y, normalizer=True)
+#
+# model_emukit = GPyModelWrapper(model_gpy)
+# expected_improvement = ExpectedImprovement(model=model_emukit)
+# bayesopt_loop = BayesianOptimizationLoop(model=model_emukit,
+#                                          space=parameter_space,
+#                                          acquisition=expected_improvement,
+#                                          batch_size=5)
+#
+# max_iterations = 15
+# bayesopt_loop.run_loop(training_function, max_iterations)
+model_wrapped.plot()
 plt.show()
 results = bayesopt_loop.get_results()
 # bayesopt_loop.loop_state.X
