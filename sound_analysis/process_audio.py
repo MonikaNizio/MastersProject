@@ -37,6 +37,6 @@ def audio_to_array(audio):
     #audio_arr = mfcc(audio_arr, sr=44100)
 
     #reduce number of dimensions
-    pca = PCA(n_components=8)
+    pca = PCA(n_components=5)
     audio_arr = pca.fit_transform(audio_arr)
     return audio_arr

@@ -31,8 +31,8 @@ from l2_bayes_opt.acquisitions import (
     L2ExpectedImprovement as L2_EI)
 from l2_bayes_opt.utils import BayesOptPlotter
 
-def get_synth_output(vector_array):  # transform the synth output into a data vector
-    #vector_array = np.array([0, 0, 0, 0, 0, 5999, 0, synth_values[0]])
+def get_synth_output(synth_values):  # transform the synth output into a data vector
+    vector_array = np.array([synth_values[0], 0, 0, 0, 0, 5999, 0, 0])
 
     # send values to the synth and record its output
     run_client(vector_array)
@@ -78,26 +78,17 @@ syn6 = np.arange(6000)
 syn7 = np.arange(1000)
 syn8 = np.arange(700)
 
-###start
-n_samples = 5
-parameter_space = ParameterSpace([ContinuousParameter("x", xmin, xmax)])
-latin_design = LatinDesign(parameter_space=parameter_space)
-X0 = latin_design.get_samples(n_samples)
-Y0 = h(X0)
-D0 = ((Y0 - target)**2).sum(axis=1)
-plotter = BayesOptPlotter(h_noiseless, target, xmin, xmax, X0=X0, Y0=Y0)
-###end
 # 2. synth paramters ranges into an 8D parameter space
-# parameter_space = ParameterSpace(
-#    [ContinuousParameter('x8', 0., 699.)])
+parameter_space = ParameterSpace(
+   [ContinuousParameter('x1', 0., 157.)])
 
 # parameter_space = ParameterSpace(
 #     [DiscreteParameter('x8', syn8)])
 
-parameter_space = ParameterSpace(
-    [ContinuousParameter('x1', 0., 157.), ContinuousParameter('x2', 0., 157.), ContinuousParameter('x3', 0., 157.),
-     ContinuousParameter('x4', 0., 157.), ContinuousParameter('x5', 0., 157.), ContinuousParameter('x6', 0., 5999.),
-     ContinuousParameter('x7', 0., 999.), ContinuousParameter('x8', 0., 699.)])
+# parameter_space = ParameterSpace(
+#     [ContinuousParameter('x1', 0., 157.), ContinuousParameter('x2', 0., 157.), ContinuousParameter('x3', 0., 157.),
+#      ContinuousParameter('x4', 0., 157.), ContinuousParameter('x5', 0., 157.), ContinuousParameter('x6', 0., 5999.),
+#      ContinuousParameter('x7', 0., 999.), ContinuousParameter('x8', 0., 699.)])
 
 # parameter_space = ParameterSpace(
 #     [DiscreteParameter('x1', syn1), DiscreteParameter('x2', syn2), DiscreteParameter('x3', syn3),
