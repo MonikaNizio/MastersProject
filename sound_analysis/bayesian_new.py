@@ -83,7 +83,6 @@ syn6 = np.arange(6000)
 syn7 = np.arange(1000)
 syn8 = np.arange(700)
 
-###start
 n_samples = 5
 
 parameter_space = ParameterSpace(

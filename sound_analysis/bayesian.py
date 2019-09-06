@@ -9,27 +9,7 @@ from GPy.models import GPRegression
 from emukit.model_wrappers import GPyModelWrapper
 from emukit.bayesian_optimization.acquisitions import ExpectedImprovement
 from emukit.bayesian_optimization.loops import BayesianOptimizationLoop
-from emukit.core.loop.user_function import UserFunction, UserFunctionWrapper
-from emukit.benchmarking.loop_benchmarking.benchmark_plot import BenchmarkPlot
-from emukit.core.loop.loop_state import LoopState
-from emukit.core.loop.loop_state import create_loop_state
-from emukit.core.loop.user_function_result import UserFunctionResult
-import pdb
 import matplotlib.pyplot as plt
-from sklearn.gaussian_process import GaussianProcessRegressor
-
-###
-from emukit.experimental_design.model_free.latin_design import LatinDesign
-from emukit.bayesian_optimization.acquisitions import (
-    NegativeLowerConfidenceBound as LCB,
-    ExpectedImprovement as EI)
-
-from scipy.stats import norm
-
-from l2_bayes_opt.acquisitions import (
-    L2NegativeLowerConfidenceBound as L2_LCB,
-    L2ExpectedImprovement as L2_EI)
-from l2_bayes_opt.utils import BayesOptPlotter
 
 def get_synth_output(synth_values):  # transform the synth output into a data vector
     vector_array = np.array([synth_values[0], 0, 0, 0, 0, 5999, 0, 0])
@@ -79,21 +59,11 @@ syn7 = np.arange(1000)
 syn8 = np.arange(700)
 
 # 2. synth paramters ranges into an 8D parameter space
+
 parameter_space = ParameterSpace(
-   [ContinuousParameter('x1', 0., 157.)])
-
-# parameter_space = ParameterSpace(
-#     [DiscreteParameter('x8', syn8)])
-
-# parameter_space = ParameterSpace(
-#     [ContinuousParameter('x1', 0., 157.), ContinuousParameter('x2', 0., 157.), ContinuousParameter('x3', 0., 157.),
-#      ContinuousParameter('x4', 0., 157.), ContinuousParameter('x5', 0., 157.), ContinuousParameter('x6', 0., 5999.),
-#      ContinuousParameter('x7', 0., 999.), ContinuousParameter('x8', 0., 699.)])
-
-# parameter_space = ParameterSpace(
-#     [DiscreteParameter('x1', syn1), DiscreteParameter('x2', syn2), DiscreteParameter('x3', syn3),
-#      DiscreteParameter('x4', syn4), DiscreteParameter('x5', syn5), DiscreteParameter('x6', syn6),
-#      DiscreteParameter('x7', syn1), DiscreteParameter('x8', syn8)])
+    [ContinuousParameter('x1', 0., 157.), ContinuousParameter('x2', 0., 157.), ContinuousParameter('x3', 0., 157.),
+     ContinuousParameter('x4', 0., 157.), ContinuousParameter('x5', 0., 157.), ContinuousParameter('x6', 0., 5999.),
+     ContinuousParameter('x7', 0., 999.), ContinuousParameter('x8', 0., 699.)])
 
 # 3. collect random points
 design = RandomDesign(parameter_space)
@@ -101,15 +71,8 @@ num_data_points = 5
 X = design.get_samples(num_data_points)  # X is a numpy array
 print("X=", X)
 
-# [is the below needed?]
-# UserFunction.evaluate(training_function, X)
-# I put UserFunctionWrapper in line 94
-
 # 4. define training_function as Y
 Y = training_function(X)
-
-# [is this needed?]
-# loop_state = create_loop_state(X, Y)
 
 # 5. train and wrap the model in Emukit
 model_gpy = GPRegression(X, Y, normalizer=True)
