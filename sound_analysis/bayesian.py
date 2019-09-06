@@ -10,9 +10,14 @@ from emukit.model_wrappers import GPyModelWrapper
 from emukit.bayesian_optimization.acquisitions import ExpectedImprovement
 from emukit.bayesian_optimization.loops import BayesianOptimizationLoop
 import matplotlib.pyplot as plt
+from sklearn.gaussian_process import GaussianProcessRegressor
 
-def get_synth_output(synth_values):  # transform the synth output into a data vector
-    vector_array = np.array([synth_values[0], 0, 0, 0, 0, 5999, 0, 0])
+
+num_data_points = 5
+
+
+def get_synth_output(vector_array):  # transform the synth output into a data vector
+    #vector_array = np.array([synth_values[0], 0, 0, 0, 0, 5999, 0, 0])
 
     # send values to the synth and record its output
     run_client(vector_array)
@@ -22,8 +27,7 @@ def get_synth_output(synth_values):  # transform the synth output into a data ve
     audio_vector = audio_to_array("synth/synth_rec.wav")
     return audio_vector
 
-
-def training_function(X):  # return the difference between the user sample and the test sample
+def training_function(X, user_sample_vector): #return the difference between the user sample and the test sample
 
     i = 0
     vector_array = [0] * np.size(X, 0)  # used for storing audio vectors of synth outputs for the given X
@@ -40,7 +44,6 @@ def training_function(X):  # return the difference between the user sample and t
     vector_array = vector_array.reshape(-1, 1)
     print("training function results for the given set of X:", vector_array)
     return vector_array
-
 
 def process_user_sample(user_sample):
     user_sample = audio_to_array(user_sample)
