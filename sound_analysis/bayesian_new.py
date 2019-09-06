@@ -31,8 +31,8 @@ from l2_bayes_opt.acquisitions import (
     L2ExpectedImprovement as L2_EI)
 from l2_bayes_opt.utils import BayesOptPlotter
 
-def get_synth_output(vector_array):  # transform the synth output into a data vector
-    #vector_array = np.array([0, 0, 0, 0, 0, 5999, 0, synth_values[0]])
+def get_synth_output(synth_values):  # transform the synth output into a data vector
+    vector_array = np.array([synth_values[0], 0, 0, 0, 0, 0, 5999, 0])
 
     # send values to the synth and record its output
     run_client(vector_array)
@@ -51,8 +51,13 @@ def training_function(X):  # return the difference between the user sample and t
     for row in X:
         print("processing set of synth settings from the row #", i, " in X:", row)
         # Euclidean distance between the target sample and the test sample
-        vector_array[i] = np.linalg.norm(user_sample_vector - get_synth_output(row.astype(int)))
-        # vector_array[i] = np.linalg.norm(user_sample_vector - get_synth_output(row.astype(int)))
+        # np.ravel(user_sample_vector)
+        # synth_output = np.ravel(get_synth_output(row.astype(int)))
+        #synth_output = np.ravel(get_synth_output(row.astype(int)))
+        #np.sum(user_sample_vector, axis=1)
+        synth_output = get_synth_output(row.astype(int))
+        #vector_array[i] = np.linalg.norm(np.ravel(user_sample_vector, order='C') - (np.ravel(get_synth_output(row.astype(int)), order='C')))
+        vector_array[i] = np.linalg.norm(user_sample_vector.reshape(1025, 1) - synth_output)
         print("result:", vector_array[i])
         i += 1
     vector_array = np.asarray(vector_array)
@@ -80,10 +85,14 @@ syn8 = np.arange(700)
 
 ###start
 n_samples = 5
+
 parameter_space = ParameterSpace(
-    [ContinuousParameter('x1', 0., 157.), ContinuousParameter('x2', 0., 157.), ContinuousParameter('x3', 0., 157.),
-     ContinuousParameter('x4', 0., 157.), ContinuousParameter('x5', 0., 157.), ContinuousParameter('x6', 0., 5999.),
-     ContinuousParameter('x7', 0., 999.), ContinuousParameter('x8', 0., 699.)])
+   [ContinuousParameter('x1', 0., 157.)])
+
+# parameter_space = ParameterSpace(
+#     [ContinuousParameter('x1', 0., 157.), ContinuousParameter('x2', 0., 157.), ContinuousParameter('x3', 0., 157.),
+#      ContinuousParameter('x4', 0., 157.), ContinuousParameter('x5', 0., 157.), ContinuousParameter('x6', 0., 5999.),
+#      ContinuousParameter('x7', 0., 999.), ContinuousParameter('x8', 0., 699.)])
 
 latin_design = LatinDesign(parameter_space=parameter_space)
 X0 = latin_design.get_samples(n_samples)
