@@ -20,6 +20,7 @@ from sklearn.gaussian_process import GaussianProcessRegressor
 
 
 num_data_points = 5
+user_sample_vector = 0
 
 def get_synth_output(vector_array):  # transform the synth output into a data vector
     #vector_array = np.array([synth_values[0], 0, 0, 0, 0, 5999, 0, 0])
@@ -32,7 +33,7 @@ def get_synth_output(vector_array):  # transform the synth output into a data ve
     audio_vector = audio_to_array("synth/synth_rec.wav")
     return audio_vector
 
-def training_function(X, user_sample_vector): #return the difference between the user sample and the test sample
+def training_function(X): #return the difference between the user sample and the test sample
 
     i = 0
     vector_array = [0] * np.size(X, 0)  # used for storing audio vectors of synth outputs for the given X
@@ -57,12 +58,13 @@ def training_function(X, user_sample_vector): #return the difference between the
 
 def main_loop(file_name):
     # 1. user sample into a data vector
+    global user_sample_vector
     user_sample_vector = audio_to_array(file_name)
     # print("user sample", user_sample_vector)
-    bayesian_opt(user_sample_vector)
+    bayesian_opt()
 
 
-def bayesian_opt(audio_vector):
+def bayesian_opt():
 
     # 2. ranges of the synth parameters
     syn1 = syn2 = syn3 = syn4 = syn5 = np.arange(158)
@@ -98,7 +100,7 @@ def bayesian_opt(audio_vector):
     # I put UserFunctionWrapper in line 94
 
     # 4. define training_function as Y
-    Y = training_function(X, audio_vector)
+    Y = training_function(X)
 
     # [is this needed?]
     # loop_state = create_loop_state(X, Y)
@@ -114,7 +116,7 @@ def bayesian_opt(audio_vector):
                                              batch_size=5)
 
     max_iterations = 15
-    bayesopt_loop.run_loop(training_function(audio_vector), max_iterations)
+    bayesopt_loop.run_loop(training_function, max_iterations)
     model_gpy.plot()
     plt.show()
     results = bayesopt_loop.get_results()
