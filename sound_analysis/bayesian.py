@@ -28,7 +28,7 @@ def get_synth_output(vector_array):  # transform the synth output into a data ve
 
 def training_function(X): #return the difference between the user sample and the test sample
 
-    i = 0
+    i = 0 #iteration counter
     vector_array = [0] * np.size(X, 0)  # used for storing audio vectors of synth outputs for the given X
     # process recordings for the given set of X
     for row in X:
