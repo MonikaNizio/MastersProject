@@ -9,14 +9,7 @@ from GPy.models import GPRegression
 from emukit.model_wrappers import GPyModelWrapper
 from emukit.bayesian_optimization.acquisitions import ExpectedImprovement
 from emukit.bayesian_optimization.loops import BayesianOptimizationLoop
-from emukit.core.loop.user_function import UserFunction, UserFunctionWrapper
-from emukit.benchmarking.loop_benchmarking.benchmark_plot import BenchmarkPlot
-from emukit.core.loop.loop_state import LoopState
-from emukit.core.loop.loop_state import create_loop_state
-from emukit.core.loop.user_function_result import UserFunctionResult
-import pdb
 import matplotlib.pyplot as plt
-from sklearn.gaussian_process import GaussianProcessRegressor
 
 
 num_data_points = 5
