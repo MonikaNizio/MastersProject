@@ -31,8 +31,8 @@ from l2_bayes_opt.acquisitions import (
     L2ExpectedImprovement as L2_EI)
 from l2_bayes_opt.utils import BayesOptPlotter
 
-def get_synth_output(synth_values):  # transform the synth output into a data vector
-    vector_array = np.array([synth_values[0], 0, 0, 0, 0, 0, 5999, 0])
+def get_synth_output(vector_array):  # transform the synth output into a data vector
+    #vector_array = np.array([synth_values[0], 0, 0, 0, 0, 0, 5999, 0])
 
     # send values to the synth and record its output
     run_client(vector_array)
