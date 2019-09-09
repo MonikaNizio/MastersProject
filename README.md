@@ -1,4 +1,7 @@
 # MastersProject
+
+"Application of Machine Learning in Parametric Sound Effect Synthesis"
+
 Software Development MSc, University of Glasgow 2019
 
 
