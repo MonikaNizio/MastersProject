@@ -15,7 +15,7 @@ def run_optimization():
 
 #filename = ''
 root = tk.Tk()
-root.geometry("700x500")
+root.geometry("700x300")
 root.title("Synth machine learning app")
 root.filename = "synth_samples/synth1.wav"
 

@@ -11,6 +11,7 @@ from emukit.bayesian_optimization.acquisitions import ExpectedImprovement
 from emukit.bayesian_optimization.loops import BayesianOptimizationLoop
 import matplotlib.pyplot as plt
 
+
 num_data_points = 5
 user_sample_vector = 0
 
