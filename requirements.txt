@@ -5,7 +5,7 @@ decorator==4.4.0
 emcee==2.2.1
 emukit==0.4.6
 GPy==1.9.8
-joblib==0.13.2
+joblib==1.2.0
 kiwisolver==1.1.0
 librosa==0.7.0
 llvmlite==0.29.0
